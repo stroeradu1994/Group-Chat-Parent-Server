@@ -14,6 +14,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.RequestBody;
 
 import java.time.LocalDateTime;
+import java.time.ZoneOffset;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -32,7 +33,7 @@ public class ChatServiceImpl implements ChatService {
             Message message = new Message();
             message.setMessage(createMessageRequest.getMessage());
             message.setSender(createMessageRequest.getSenderId());
-            message.setCreatedAt(LocalDateTime.now());
+            message.setCreatedAt(LocalDateTime.now(ZoneOffset.UTC));
             chatRepo.save(message);
             return getMessages();
         } else {
