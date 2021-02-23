@@ -1,5 +1,6 @@
 package com.groupchat.parentserver.service;
 
+import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 import com.groupchat.parentserver.dto.CreateMessageRequest;
 import com.groupchat.parentserver.dto.MessageResponse;
@@ -13,8 +14,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.RequestBody;
 
 import java.time.LocalDateTime;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -26,7 +26,7 @@ public class ChatServiceImpl implements ChatService {
     @Autowired
     ChatRepo chatRepo;
 
-    public Set<MessageResponse> sendMessage(@RequestBody CreateMessageRequest createMessageRequest) throws NotFoundException {
+    public List<MessageResponse> sendMessage(@RequestBody CreateMessageRequest createMessageRequest) throws NotFoundException {
         Optional<Profile> profileOptional = profileRepo.findById(createMessageRequest.getSenderId());
         if (profileOptional.isPresent()) {
             Message message = new Message();
@@ -40,13 +40,14 @@ public class ChatServiceImpl implements ChatService {
         }
     }
 
-    public Set<MessageResponse> getMessages() {
-        return Sets.newHashSet(chatRepo.findAll())
+    public List<MessageResponse> getMessages() {
+        return Lists.newArrayList(chatRepo.findAll())
                 .stream()
                 .map(message -> profileRepo.findById(message.getSender())
                         .map(profile -> createMessageResponse(message, profile.getName()))
                         .orElseGet(() -> createMessageResponse(message, "Unknown")))
-                .collect(Collectors.toSet());
+                .sorted(Comparator.comparing(MessageResponse::getCreatedAt))
+                .collect(Collectors.toList());
     }
 
     private MessageResponse createMessageResponse(Message message, String senderName) {
