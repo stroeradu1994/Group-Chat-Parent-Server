@@ -27,7 +27,10 @@ public class ChatServiceImpl implements ChatService {
     @Autowired
     ChatRepo chatRepo;
 
-    public List<MessageResponse> sendMessage(@RequestBody CreateMessageRequest createMessageRequest) throws NotFoundException {
+    public List<MessageResponse> sendMessage(@RequestBody CreateMessageRequest createMessageRequest) throws Exception {
+        if (createMessageRequest == null) {
+            throw new Exception();
+        }
         Optional<Profile> profileOptional = profileRepo.findById(createMessageRequest.getSenderId());
         if (profileOptional.isPresent()) {
             Message message = new Message();

@@ -10,7 +10,7 @@ import java.util.Set;
 
 public interface ChatService {
 
-    List<MessageResponse> sendMessage(@RequestBody CreateMessageRequest createMessageRequest) throws NotFoundException;
+    List<MessageResponse> sendMessage(@RequestBody CreateMessageRequest createMessageRequest) throws Exception;
 
     List<MessageResponse> getMessages();
 }

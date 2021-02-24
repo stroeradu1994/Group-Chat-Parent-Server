@@ -21,6 +21,8 @@ public class ChatController {
             return ResponseEntity.ok(chatService.sendMessage(createMessageRequest));
         } catch (NotFoundException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("CreateMessageRequest was null");
         }
     }
 
